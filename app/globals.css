@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --brown:      #7B4F2E;
+  --brown-dk:   #3E2210;
+  --brown-lt:   #C4956A;
+  --silver:     #C8CDD4;
+  --silver-lt:  #E8EAED;
+  --silver-dk:  #8A9099;
+  --cream:      #F5F0EA;
+  --cream-dk:   #EBE3D8;
+  --ink:        #1A1410;
+  --ink-lt:     #3D2E22;
+  --white:      #FDFCFB;
+  --gold:       #B8963E;
+  --gold-lt:    #D4B568;
+  --ff-display: var(--font-display), Georgia, serif;
+  --ff-body:    var(--font-body), system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--ff-body);
+  background: var(--ink);
+  color: var(--cream);
+  overflow-x: hidden;
+}
+
+::selection { background: var(--brown); color: var(--cream); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--brown); border-radius: 2px; }
+
+/* Fade-up animation utility */
+.fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
