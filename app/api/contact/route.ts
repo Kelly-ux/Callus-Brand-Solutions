@@ -1,10 +1,20 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
   try {
+    // 1. Safe Check: Verify API key exists before instantiating to prevent server crashes
+    if (!process.env.RESEND_API_KEY) {
+      console.error("Missing RESEND_API_KEY environment variable.");
+      return NextResponse.json(
+        { error: "Email service configuration missing" },
+        { status: 500 }
+      );
+    }
+
+    // 2. Instantiate inside the handler so it executes at runtime, not build time
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     const body = await req.json();
     const { name, email, phone, service, business } = body;
 
@@ -25,6 +35,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // Send email via Resend
     await resend.emails.send({
       from: "CBS Website <noreply@callusbrandsolutions.com>",
       to: [process.env.CONTACT_EMAIL ?? "hello@callusbrandsolutions.com"],
