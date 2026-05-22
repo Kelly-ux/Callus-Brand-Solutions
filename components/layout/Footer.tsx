@@ -60,11 +60,11 @@ export default function Footer() {
             <h4 className="text-xs font-medium tracking-[0.16em] uppercase mb-5" style={{ color: "var(--cream)" }}>Company</h4>
             <ul className="flex flex-col gap-3 list-none">
               {[
-                { label: "About CBS", href: "/about" },
-                { label: "Our Work", href: "/portfolio" },
-                { label: "Pricing", href: "/pricing" },
-                { label: "Insights Blog", href: "/blog" },
-                { label: "Contact", href: "/contact" },
+                { label: "About CBS", href: "#about" },
+{ label: "Our Work", href: "#portfolio" },
+{ label: "Pricing", href: "#pricing" },
+{ label: "Insights Blog", href: "#blog" },
+{ label: "Contact", href: "#contact" },
               ].map((item) => (
                 <li key={item.label}>
                   <Link href={item.href} className="text-sm font-light no-underline transition-colors duration-200 hover:text-[var(--cream)]"

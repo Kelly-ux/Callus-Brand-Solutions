@@ -1,3 +1,4 @@
+
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -13,102 +14,76 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    // Custom cursor
+    const cursor = document.getElementById("cbs-cursor");
+    const ring = document.getElementById("cbs-cursor-ring");
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    const onMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
+    document.addEventListener("mousemove", onMove);
+    let raf: number;
+    const animate = () => {
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      if (cursor) cursor.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+      if (ring) ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+      raf = requestAnimationFrame(animate);
+    };
+    animate();
+    return () => { document.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); };
+  }, []);
+
+  const navLinks = ["About", "Services", "Portfolio", "Pricing", "Blog", "Contact"];
+
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 h-[72px] flex items-center justify-between px-10 transition-all duration-300 ${
-          scrolled
-            ? "bg-[rgba(20,14,9,0.88)] backdrop-blur-lg border-b border-[rgba(200,160,80,0.12)]"
-            : "border-b border-transparent"
-        }`}
-      >
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 no-underline">
-          <div className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-[var(--ink)] text-lg"
-            style={{ background: "linear-gradient(135deg,var(--silver) 0%,var(--silver-dk) 60%,var(--silver-lt) 100%)", fontFamily: "var(--ff-display)" }}>
-            CBS
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-[var(--silver-lt)] tracking-wider text-[15px]"
-              style={{ fontFamily: "var(--ff-display)", fontWeight: 600 }}>
-              Callus
-            </span>
-            <span className="text-[var(--brown-lt)] text-[9px] tracking-[0.18em] uppercase mt-1 font-normal">
-              Brand Solutions
-            </span>
+      <div id="cbs-cursor" aria-hidden="true" />
+      <div id="cbs-cursor-ring" aria-hidden="true" />
+
+      <nav className={`cbs-nav${scrolled ? " scrolled" : ""}`} role="navigation" aria-label="Main navigation">
+        <Link href="/" className="nav-logo" aria-label="Callus Brand Solutions home">
+          <div className="nav-logo-mark" aria-hidden="true">CBS</div>
+          <div className="nav-name">
+            <span className="nav-name-main">Callus</span>
+            <span className="nav-name-sub">Brand Solutions</span>
           </div>
         </Link>
 
-        {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-9 list-none">
-          {["About", "Services", "Portfolio", "Pricing", "Blog", "Contact"].map((item) => (
+        <ul className="nav-links" role="list">
+          {navLinks.map((item) => (
             <li key={item}>
-              <Link
-                href={`/${item.toLowerCase()}`}
-                className="text-[var(--silver-dk)] text-[13px] tracking-[0.06em] uppercase no-underline hover:text-[var(--cream)] transition-colors duration-200 relative group"
-              >
-                {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-[var(--gold)] group-hover:w-full transition-all duration-300" />
-              </Link>
+              <a href={`#${item.toLowerCase()}`}>{item}</a>
             </li>
           ))}
         </ul>
 
-        {/* Portal CTA */}
-        <button
-          onClick={() => setPortalOpen(true)}
-          className="hidden md:inline-flex items-center px-5 py-2 text-[12px] font-medium tracking-[0.1em] uppercase rounded-sm transition-all duration-200 cursor-pointer"
-          style={{ border: "1px solid rgba(200,150,62,0.5)", color: "var(--gold-lt)", background: "transparent" }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLButtonElement).style.background = "var(--gold)";
-            (e.currentTarget as HTMLButtonElement).style.color = "var(--ink)";
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--gold)";
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-            (e.currentTarget as HTMLButtonElement).style.color = "var(--gold-lt)";
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(200,150,62,0.5)";
-          }}
-        >
-          Client Portal
-        </button>
+        <button className="nav-cta" onClick={() => setPortalOpen(true)}>Client Portal</button>
 
-        {/* Mobile toggle */}
         <button
-          className="md:hidden flex flex-col gap-[5px] bg-transparent border-none p-1 cursor-pointer"
+          className="nav-mobile-toggle"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
           aria-expanded={menuOpen}
         >
-          <span className={`block w-6 h-px bg-[var(--silver)] transition-transform duration-300 ${menuOpen ? "rotate-45 translate-y-[6px]" : ""}`} />
-          <span className={`block w-6 h-px bg-[var(--silver)] transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`} />
-          <span className={`block w-6 h-px bg-[var(--silver)] transition-transform duration-300 ${menuOpen ? "-rotate-45 -translate-y-[6px]" : ""}`} />
+          <span style={{ transform: menuOpen ? "rotate(45deg) translateY(6px)" : undefined }} />
+          <span style={{ opacity: menuOpen ? 0 : 1 }} />
+          <span style={{ transform: menuOpen ? "rotate(-45deg) translateY(-6px)" : undefined }} />
         </button>
       </nav>
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="fixed inset-0 z-40 pt-[72px]"
-          style={{ background: "rgba(20,14,9,0.97)", backdropFilter: "blur(16px)" }}>
-          <ul className="flex flex-col items-center justify-center gap-8 h-full list-none pb-20">
-           {["About", "Services", "Portfolio", "Pricing", "Blog", "Contact"].map((item) => (
-            <li key={item}>
-              <Link
-                href={`#${item.toLowerCase()}`}
-                onClick={() => setMenuOpen(false)}
-                className="no-underline transition-colors duration-200"
-                style={{ fontFamily: "var(--ff-display)", fontSize: "36px", fontWeight: 600, color: "var(--cream)" }}
-              >
+        <div style={{ position: "fixed", inset: 0, zIndex: 40, paddingTop: "72px", background: "rgba(20,14,9,0.97)", backdropFilter: "blur(16px)" }}>
+          <ul style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "32px", height: "100%", listStyle: "none", paddingBottom: "80px" }}>
+            {navLinks.map((item) => (
+              <li key={item}>
+                <a href={`#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)}
+                  style={{ fontFamily: "var(--ff-display)", fontSize: "36px", fontWeight: 600, color: "var(--cream)" }}>
                   {item}
-                </Link>
+                </a>
               </li>
             ))}
             <li>
-              <button
-                onClick={() => { setMenuOpen(false); setPortalOpen(true); }}
-                className="px-8 py-3 text-sm tracking-widest uppercase rounded-sm cursor-pointer"
-                style={{ background: "var(--brown)", border: "1px solid var(--brown-lt)", color: "var(--cream)" }}
-              >
+              <button className="btn-primary" onClick={() => { setMenuOpen(false); setPortalOpen(true); }}>
                 Client Portal
               </button>
             </li>
@@ -118,55 +93,29 @@ export default function Navbar() {
 
       {/* Portal Modal */}
       {portalOpen && (
-        <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4"
-          style={{ background: "rgba(10,6,2,0.92)", backdropFilter: "blur(16px)" }}
-          onClick={(e) => e.target === e.currentTarget && setPortalOpen(false)}
-        >
-          <div className="w-full max-w-md rounded-2xl p-12 relative"
-            style={{ background: "var(--ink)", border: "1px solid rgba(200,160,80,0.2)" }}>
-            <button
-              onClick={() => setPortalOpen(false)}
-              className="absolute top-5 right-5 bg-transparent border-none text-2xl cursor-pointer leading-none"
-              style={{ color: "var(--silver-dk)" }}
-              aria-label="Close portal"
-            >
-              ×
-            </button>
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg mb-7"
-              style={{ background: "linear-gradient(135deg,var(--silver) 0%,var(--silver-dk) 60%,var(--silver-lt) 100%)", color: "var(--ink)", fontFamily: "var(--ff-display)" }}>
-              CBS
-            </div>
-            <h2 className="text-[28px] font-semibold mb-2" style={{ fontFamily: "var(--ff-display)", color: "var(--cream)" }}>
-              Client Portal
-            </h2>
-            <p className="text-sm font-light mb-8 leading-relaxed" style={{ color: "var(--silver-dk)" }}>
-              Access your campaign dashboards, reports, and deliverables.
-            </p>
-            <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                placeholder="your@email.com"
-                className="w-full px-4 py-3 rounded-md text-sm outline-none"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(200,160,80,0.15)", color: "var(--cream)", fontFamily: "var(--ff-body)" }}
-              />
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-md text-sm outline-none"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(200,160,80,0.15)", color: "var(--cream)", fontFamily: "var(--ff-body)" }}
-              />
-              <button
-                type="submit"
-                className="w-full py-4 text-sm font-medium tracking-widest uppercase rounded cursor-pointer transition-all duration-200"
-                style={{ background: "var(--brown)", border: "1px solid var(--brown-lt)", color: "var(--cream)" }}
-              >
-                Sign in →
-              </button>
+        <div className="portal-overlay" onClick={(e) => e.target === e.currentTarget && setPortalOpen(false)}>
+          <div className="portal-box">
+            <button className="portal-close" onClick={() => setPortalOpen(false)} aria-label="Close portal">×</button>
+            <div className="nav-logo-mark" style={{ marginBottom: "28px" }} aria-hidden="true">CBS</div>
+            <div className="portal-title">Client Portal</div>
+            <div className="portal-sub">Access your campaign dashboards, reports, and deliverables. Contact your account manager if you need access.</div>
+            <form className="portal-form" onSubmit={(e) => {
+              e.preventDefault();
+              const btn = e.currentTarget.querySelector("button") as HTMLButtonElement;
+              btn.textContent = "Signing in…"; btn.disabled = true;
+              setTimeout(() => { btn.textContent = "Sign in →"; btn.disabled = false; alert("Demo: connects to Supabase Auth in production."); }, 1400);
+            }}>
+              <div>
+                <label htmlFor="portal-email" style={{ fontSize: "11px", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--silver-dk)", display: "block", marginBottom: "6px" }}>Email</label>
+                <input type="email" id="portal-email" placeholder="your@email.com" className="form-input" required />
+              </div>
+              <div>
+                <label htmlFor="portal-pass" style={{ fontSize: "11px", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--silver-dk)", display: "block", marginBottom: "6px" }}>Password</label>
+                <input type="password" id="portal-pass" placeholder="••••••••" className="form-input" required />
+              </div>
+              <button type="submit" className="portal-btn">Sign in →</button>
             </form>
-            <p className="text-xs text-center mt-4 leading-relaxed" style={{ color: "var(--silver-dk)" }}>
-              Secure login · All data encrypted at rest and in transit
-            </p>
+            <div className="portal-note">Secure login powered by Supabase Auth.<br />All data encrypted at rest and in transit.</div>
           </div>
         </div>
       )}
