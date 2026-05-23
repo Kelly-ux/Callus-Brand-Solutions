@@ -1,95 +1,80 @@
-
 "use client";
-
-import Link from "next/link";
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer style={{ background: "var(--ink)", borderTop: "1px solid rgba(200,160,80,0.1)" }} className="pt-16 pb-8">
-      <div className="max-w-[1200px] mx-auto px-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-14">
+    <footer className="cbs-footer">
+      <div className="cbs-container">
+        <div className="footer-inner">
 
           {/* Brand */}
-          <div className="md:col-span-2">
-            <Link href="/" className="inline-flex items-center gap-3 no-underline mb-4">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg"
-                style={{ background: "linear-gradient(135deg,var(--silver) 0%,var(--silver-dk) 60%,var(--silver-lt) 100%)", color: "var(--ink)", fontFamily: "var(--ff-display)" }}>
-                CBS
+          <div className="footer-brand">
+            <a href="#hero" className="nav-logo" aria-label="Callus Brand Solutions">
+              <div className="nav-logo-mark" aria-hidden="true">CBS</div>
+              <div className="nav-name">
+                <span className="nav-name-main">Callus</span>
+                <span className="nav-name-sub">Brand Solutions</span>
               </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-[var(--silver-lt)] tracking-wider text-[15px]" style={{ fontFamily: "var(--ff-display)", fontWeight: 600 }}>Callus</span>
-                <span className="text-[var(--brown-lt)] text-[9px] tracking-[0.18em] uppercase mt-1">Brand Solutions</span>
-              </div>
-            </Link>
-            <p className="text-sm font-light leading-relaxed max-w-[280px] mt-4 mb-6" style={{ color: "var(--silver-dk)" }}>
-              We build the brands that build Ghana. Full-service digital marketing for businesses serious about growth.
-            </p>
-            <div className="flex gap-2">
-              {["ig", "𝕏", "li", "tt", "fb"].map((s, i) => (
-                <a key={i} href="#"
-                  className="w-9 h-9 rounded-md flex items-center justify-center text-xs no-underline transition-all duration-200"
-                  style={{ border: "1px solid rgba(200,160,80,0.15)", color: "var(--silver-dk)" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--gold)"; (e.currentTarget as HTMLAnchorElement).style.color = "var(--gold)"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(200,160,80,0.15)"; (e.currentTarget as HTMLAnchorElement).style.color = "var(--silver-dk)"; }}
-                >
-                  {s}
-                </a>
+            </a>
+            <p>We build the brands that build Ghana. Full-service digital marketing for businesses serious about growth.</p>
+            <div className="footer-socials" aria-label="Social media links">
+              {["ig","𝕏","li","tt","fb"].map((s, i) => (
+                <a key={i} href="#" className="footer-social" aria-label={s} title={s}>{s}</a>
               ))}
             </div>
           </div>
 
           {/* Services */}
-          <div>
-            <h4 className="text-xs font-medium tracking-[0.16em] uppercase mb-5" style={{ color: "var(--cream)" }}>Services</h4>
-            <ul className="flex flex-col gap-3 list-none">
-              {["Web Development", "Social Media", "Paid Advertising", "Content & SEO", "Mobile Apps", "Analytics"].map((item) => (
-                <li key={item}>
-                  <Link href="/services" className="text-sm font-light no-underline transition-colors duration-200 hover:text-[var(--cream)]"
-                    style={{ color: "var(--silver-dk)" }}>
-                    {item}
-                  </Link>
-                </li>
+          <div className="footer-col">
+            <h4>Services</h4>
+            <ul className="footer-links">
+              {["Web Development","Social Media","Paid Advertising","Content & SEO","Mobile Apps","Analytics"].map(item => (
+                <li key={item}><a href="#services">{item}</a></li>
               ))}
             </ul>
           </div>
 
           {/* Company */}
-          <div>
-            <h4 className="text-xs font-medium tracking-[0.16em] uppercase mb-5" style={{ color: "var(--cream)" }}>Company</h4>
-            <ul className="flex flex-col gap-3 list-none">
+          <div className="footer-col">
+            <h4>Company</h4>
+            <ul className="footer-links">
               {[
-                { label: "About CBS", href: "#about" },
-{ label: "Our Work", href: "#portfolio" },
-{ label: "Pricing", href: "#pricing" },
-{ label: "Insights Blog", href: "#blog" },
-{ label: "Contact", href: "#contact" },
-              ].map((item) => (
-                <li key={item.label}>
-                  <Link href={item.href} className="text-sm font-light no-underline transition-colors duration-200 hover:text-[var(--cream)]"
-                    style={{ color: "var(--silver-dk)" }}>
-                    {item.label}
-                  </Link>
-                </li>
+                { label:"About CBS", href:"#about" },
+                { label:"Our Work", href:"#portfolio" },
+                { label:"Pricing", href:"#pricing" },
+                { label:"Insights Blog", href:"#blog" },
+                { label:"Contact", href:"#contact" },
+              ].map(item => (
+                <li key={item.label}><a href={item.href}>{item.label}</a></li>
               ))}
             </ul>
           </div>
+
+          {/* Get Started */}
+          <div className="footer-col">
+            <h4>Get Started</h4>
+            <ul className="footer-links">
+              {[
+                { label:"Free brand audit", href:"#contact" },
+                { label:"View pricing", href:"#pricing" },
+                { label:"Book a call", href:"#contact" },
+                { label:"Partnership enquiries", href:"#contact" },
+              ].map(item => (
+                <li key={item.label}><a href={item.href}>{item.label}</a></li>
+              ))}
+            </ul>
+          </div>
+
         </div>
 
-        {/* Bottom bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-7"
-          style={{ borderTop: "1px solid rgba(200,160,80,0.08)" }}>
-          <p className="text-xs font-light" style={{ color: "var(--silver-dk)" }}>
-            © {year} Callus Brand Solutions. All rights reserved. Accra, Ghana.
-          </p>
-          <div className="flex gap-6">
-            {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((item) => (
-              <a key={item} href="#" className="text-xs no-underline transition-colors duration-200 hover:text-[var(--cream)]"
-                style={{ color: "var(--silver-dk)" }}>
-                {item}
-              </a>
-            ))}
+        {/* Bottom */}
+        <div className="footer-bottom">
+          <div className="footer-copy">© {year} Callus Brand Solutions. All rights reserved. Accra, Ghana.</div>
+          <div className="footer-legal">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Cookie Policy</a>
           </div>
         </div>
       </div>

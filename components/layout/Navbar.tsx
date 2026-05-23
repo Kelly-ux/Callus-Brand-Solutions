@@ -7,6 +7,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [portalOpen, setPortalOpen] = useState(false);
+  const [portalEmail, setPortalEmail] = useState("");
+  const [portalPassword, setPortalPassword] = useState("");
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [portalError, setPortalError] = useState("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -32,6 +36,77 @@ export default function Navbar() {
     return () => { document.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); };
   }, []);
 
+async function handlePortalLogin(e: React.FormEvent) {
+  e.preventDefault();
+  setPortalLoading(true);
+  setPortalError("");
+
+  try {
+    const { createClient } = await import("@supabase/supabase-js");
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          persistSession: true,
+          storageKey: "cbs-auth-token",
+          storage: {
+            getItem: (key) => {
+              if (typeof window === "undefined") return null;
+              return window.localStorage.getItem(key);
+            },
+            setItem: (key, value) => {
+              if (typeof window !== "undefined") {
+                window.localStorage.setItem(key, value);
+                // Also set as cookie so middleware can read it
+                const maxAge = 60 * 60 * 24 * 7; // 7 days
+                document.cookie = `cbs-auth-token=${value}; path=/; max-age=${maxAge}; SameSite=Lax`;
+                document.cookie = `sb-szixusdiotfhboqrmtzr-auth-token=${value}; path=/; max-age=${maxAge}; SameSite=Lax`;
+              }
+            },
+            removeItem: (key) => {
+              if (typeof window !== "undefined") {
+                window.localStorage.removeItem(key);
+                document.cookie = `cbs-auth-token=; path=/; max-age=0`;
+                document.cookie = `sb-szixusdiotfhboqrmtzr-auth-token=; path=/; max-age=0`;
+              }
+            },
+          },
+        },
+      }
+    );
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: portalEmail,
+      password: portalPassword,
+    });
+
+    if (error) {
+      setPortalError(error.message);
+      setPortalLoading(false);
+      return;
+    }
+
+    if (data.session) {
+      // Set the Supabase session cookie directly
+      const cookieValue = JSON.stringify(data.session);
+      const maxAge = 60 * 60 * 24 * 7;
+      document.cookie = `sb-szixusdiotfhboqrmtzr-auth-token=${encodeURIComponent(cookieValue)}; path=/; max-age=${maxAge}; SameSite=Lax`;
+
+      setPortalOpen(false);
+      setPortalEmail("");
+      setPortalPassword("");
+      setPortalLoading(false);
+
+      // Hard navigation to force middleware to re-evaluate with new cookie
+      window.location.href = "/portal/dashboard";
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+    setPortalError("Something went wrong. Please try again.");
+    setPortalLoading(false);
+  }
+}
   const navLinks = ["About", "Services", "Portfolio", "Pricing", "Blog", "Contact"];
 
   return (
@@ -93,32 +168,46 @@ export default function Navbar() {
 
       {/* Portal Modal */}
       {portalOpen && (
-        <div className="portal-overlay" onClick={(e) => e.target === e.currentTarget && setPortalOpen(false)}>
-          <div className="portal-box">
-            <button className="portal-close" onClick={() => setPortalOpen(false)} aria-label="Close portal">×</button>
-            <div className="nav-logo-mark" style={{ marginBottom: "28px" }} aria-hidden="true">CBS</div>
-            <div className="portal-title">Client Portal</div>
-            <div className="portal-sub">Access your campaign dashboards, reports, and deliverables. Contact your account manager if you need access.</div>
-            <form className="portal-form" onSubmit={(e) => {
-              e.preventDefault();
-              const btn = e.currentTarget.querySelector("button") as HTMLButtonElement;
-              btn.textContent = "Signing in…"; btn.disabled = true;
-              setTimeout(() => { btn.textContent = "Sign in →"; btn.disabled = false; alert("Demo: connects to Supabase Auth in production."); }, 1400);
-            }}>
-              <div>
-                <label htmlFor="portal-email" style={{ fontSize: "11px", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--silver-dk)", display: "block", marginBottom: "6px" }}>Email</label>
-                <input type="email" id="portal-email" placeholder="your@email.com" className="form-input" required />
-              </div>
-              <div>
-                <label htmlFor="portal-pass" style={{ fontSize: "11px", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--silver-dk)", display: "block", marginBottom: "6px" }}>Password</label>
-                <input type="password" id="portal-pass" placeholder="••••••••" className="form-input" required />
-              </div>
-              <button type="submit" className="portal-btn">Sign in →</button>
-            </form>
-            <div className="portal-note">Secure login powered by Supabase Auth.<br />All data encrypted at rest and in transit.</div>
-          </div>
+  <div className="portal-overlay" onClick={(e) => e.target === e.currentTarget && setPortalOpen(false)}>
+    <div className="portal-box">
+      <button className="portal-close" onClick={() => setPortalOpen(false)} aria-label="Close portal">×</button>
+      <div className="nav-logo-mark" style={{ marginBottom: "28px" }} aria-hidden="true">CBS</div>
+      <div className="portal-title">Client Portal</div>
+      <div className="portal-sub">Access your campaign dashboards, reports, and deliverables.</div>
+      <form className="portal-form" onSubmit={handlePortalLogin}>
+        <div>
+          <label htmlFor="portal-email" style={{ fontSize:"11px", fontWeight:500, letterSpacing:"0.14em", textTransform:"uppercase", color:"var(--silver-dk)", display:"block", marginBottom:"6px" }}>
+            Email
+          </label>
+          <input
+            type="email" id="portal-email" className="form-input"
+            placeholder="your@email.com" required
+            value={portalEmail}
+            onChange={e => setPortalEmail(e.target.value)}
+          />
         </div>
-      )}
+        <div>
+          <label htmlFor="portal-pass" style={{ fontSize:"11px", fontWeight:500, letterSpacing:"0.14em", textTransform:"uppercase", color:"var(--silver-dk)", display:"block", marginBottom:"6px" }}>
+            Password
+          </label>
+          <input
+            type="password" id="portal-pass" className="form-input"
+            placeholder="••••••••" required
+            value={portalPassword}
+            onChange={e => setPortalPassword(e.target.value)}
+          />
+        </div>
+        {portalError && (
+          <p style={{ fontSize:"13px", color:"#e87070" }}>{portalError}</p>
+        )}
+        <button type="submit" className="portal-btn" disabled={portalLoading}>
+          {portalLoading ? "Signing in…" : "Sign in →"}
+        </button>
+      </form>
+      <div className="portal-note">Secure login · All data encrypted at rest and in transit</div>
+    </div>
+  </div>
+)}
     </>
   );
 }

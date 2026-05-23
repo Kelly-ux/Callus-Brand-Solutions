@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 
 const projects = [
-  { letter:"K", cat:"E-commerce · Social Media", title:"Kente Collective — 340% increase in online sales in 90 days" },
+  { letter:"D", cat:"Fashion&Interior Decoration . B2B Matchmaking", title:"Duffyai — 340% increase in online sales in 90 days" },
   { letter:"S", cat:"Restaurant · Brand Identity", title:"Savanna Eats — Full rebrand & web launch" },
   { letter:"T", cat:"Tech · SEO", title:"TechHub Accra — #1 on Google in 6 months" },
   { letter:"G", cat:"Real Estate · Paid Ads", title:"Gold Coast Realty — 80 qualified leads per month" },

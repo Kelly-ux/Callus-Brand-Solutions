@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 
 const testimonials = [
-  { initial:"A", quote:"CBS completely transformed how we show up online. Within three months, our Instagram following grew from 400 to over 8,000 — and those are real, buying customers.", name:"Abena Mensah", role:"Founder, Abena Naturals · Accra" },
+  { initial:"J", quote:"CBS completely transformed how we show up online. Within three months, our Instagram following grew from 400 to over 8,000 — and those are real, buying customers.", name:"Jessica", role:"Founder, Duffyai · Accra" },
   { initial:"K", quote:"We had a website that nobody could find. CBS rebuilt it, handled our SEO, and now we rank on the first page for every service we offer in Accra. The ROI is obvious.", name:"Kwame Asante", role:"CEO, TechHub Accra" },
   { initial:"E", quote:"The monthly reports are what sold me. I always know exactly what my marketing spend is doing. No fluff, no jargon — just numbers I can take to my board.", name:"Efua Boateng", role:"Director, Gold Coast Realty" },
 ];
