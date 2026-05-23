@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import SignOutButton from "./SignOutButton";
 
 export default async function Dashboard() {
   const cookieStore = await cookies();
@@ -71,11 +72,7 @@ export default async function Dashboard() {
         </div>
 
         {/* Sign out */}
-        <form action="/api/auth/signout" method="POST">
-          <button type="submit" style={{ background:"transparent", border:"1px solid rgba(200,160,80,0.2)", color:"var(--silver-dk)", padding:"10px 24px", borderRadius:"4px", fontSize:"13px", cursor:"pointer" }}>
-            Sign out
-          </button>
-        </form>
+        <SignOutButton />
 
       </div>
     </div>

@@ -101,10 +101,11 @@ async function handlePortalLogin(e: React.FormEvent) {
       // Hard navigation to force middleware to re-evaluate with new cookie
       window.location.href = "/portal/dashboard";
     }
-  } catch (err) {
-    console.error("Login error:", err);
-    setPortalError("Something went wrong. Please try again.");
-    setPortalLoading(false);
+  } catch (err: any) {
+  console.error("Login error:", err);
+  setPortalError(err?.message || JSON.stringify(err) || "Something went wrong.");
+  setPortalLoading(false);
+
   }
 }
   const navLinks = ["About", "Services", "Portfolio", "Pricing", "Blog", "Contact"];
