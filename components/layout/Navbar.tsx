@@ -43,35 +43,15 @@ async function handlePortalLogin(e: React.FormEvent) {
 
   try {
     const { createClient } = await import("@supabase/supabase-js");
+
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         auth: {
           persistSession: true,
-          storageKey: "cbs-auth-token",
-          storage: {
-            getItem: (key) => {
-              if (typeof window === "undefined") return null;
-              return window.localStorage.getItem(key);
-            },
-            setItem: (key, value) => {
-              if (typeof window !== "undefined") {
-                window.localStorage.setItem(key, value);
-                // Also set as cookie so middleware can read it
-                const maxAge = 60 * 60 * 24 * 7; // 7 days
-                document.cookie = `cbs-auth-token=${value}; path=/; max-age=${maxAge}; SameSite=Lax`;
-                document.cookie = `sb-szixusdiotfhboqrmtzr-auth-token=${value}; path=/; max-age=${maxAge}; SameSite=Lax`;
-              }
-            },
-            removeItem: (key) => {
-              if (typeof window !== "undefined") {
-                window.localStorage.removeItem(key);
-                document.cookie = `cbs-auth-token=; path=/; max-age=0`;
-                document.cookie = `sb-szixusdiotfhboqrmtzr-auth-token=; path=/; max-age=0`;
-              }
-            },
-          },
+          autoRefreshToken: true,
+          detectSessionInUrl: false,
         },
       }
     );
@@ -88,25 +68,39 @@ async function handlePortalLogin(e: React.FormEvent) {
     }
 
     if (data.session) {
-      // Set the Supabase session cookie directly
-      const cookieValue = JSON.stringify(data.session);
-      const maxAge = 60 * 60 * 24 * 7;
-      document.cookie = `sb-szixusdiotfhboqrmtzr-auth-token=${encodeURIComponent(cookieValue)}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      // Store session in localStorage for persistence
+      if (typeof window !== "undefined") {
+        const sessionKey = `sb-${process.env.NEXT_PUBLIC_SUPABASE_URL!.split("//")[1].split(".")[0]}-auth-token`;
+        localStorage.setItem(sessionKey, JSON.stringify({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token,
+          expires_at: data.session.expires_at,
+          expires_in: data.session.expires_in,
+          token_type: data.session.token_type,
+          user: data.session.user,
+        }));
+
+        // Set cookie for server-side auth check
+        const maxAge = 60 * 60 * 24 * 7;
+        const cookieName = `sb-${process.env.NEXT_PUBLIC_SUPABASE_URL!.split("//")[1].split(".")[0]}-auth-token`;
+        document.cookie = `${cookieName}=${encodeURIComponent(JSON.stringify(data.session))}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      }
 
       setPortalOpen(false);
       setPortalEmail("");
       setPortalPassword("");
       setPortalLoading(false);
 
-      // Hard navigation to force middleware to re-evaluate with new cookie
-      window.location.href = "/portal/dashboard";
+      setTimeout(() => {
+        window.location.href = "/portal/dashboard";
+      }, 200);
     }
   } catch (err: any) {
-  console.error("Login error:", err);
-  setPortalError(err?.message || JSON.stringify(err) || "Something went wrong.");
-  setPortalLoading(false);
-
+    console.error("Login error:", err);
+    setPortalError(err?.message || "Something went wrong. Please try again.");
+    setPortalLoading(false);
   }
+
 }
   const navLinks = ["About", "Services", "Portfolio", "Pricing", "Blog", "Contact"];
 

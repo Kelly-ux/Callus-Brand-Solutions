@@ -6,18 +6,36 @@ export default function SignOutButton() {
   const router = useRouter();
 
   async function handleSignOut() {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-    await supabase.auth.signOut();
+    try {
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
 
-    // Clear the auth cookie manually
-    document.cookie = "sb-szixusdiotfhboqrmtzr-auth-token=; path=/; max-age=0";
-    document.cookie = "cbs-auth-token=; path=/; max-age=0";
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.error("Sign out error:", e);
+    } finally {
+      // Clear all Supabase session data from localStorage
+      if (typeof window !== "undefined") {
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith("sb-") || key.includes("supabase") || key.includes("cbs-auth")) {
+            localStorage.removeItem(key);
+          }
+        });
 
-    router.push("/");
-    router.refresh();
+        // Clear all auth cookies
+        document.cookie.split(";").forEach(cookie => {
+          const name = cookie.split("=")[0].trim();
+          if (name.startsWith("sb-") || name.includes("supabase") || name.includes("cbs-auth")) {
+            document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax`;
+          }
+        });
+      }
+
+      router.push("/");
+      router.refresh();
+    }
   }
 
   return (
