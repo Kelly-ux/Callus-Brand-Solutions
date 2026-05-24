@@ -29,22 +29,32 @@ export default function Contact() {
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        setStatus("sent");
-        setForm({ name:"", email:"", phone:"", service:"", business:"" });
-        setTimeout(() => setStatus("idle"), 6000);
-      } else { setStatus("error"); }
-    } catch { setStatus("error"); }
-  }
+  e.preventDefault();
+  setStatus("sending");
 
+  // Get Turnstile token
+  const turnstileToken = (window as any).turnstile?.getResponse() || "";
+
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, turnstileToken }),
+    });
+    if (res.ok) {
+      setStatus("sent");
+      setForm({ name: "", email: "", phone: "", service: "", business: "" });
+      (window as any).turnstile?.reset();
+      setTimeout(() => setStatus("idle"), 6000);
+    } else {
+      const data = await res.json();
+      setStatus("error");
+      console.error(data.error);
+    }
+  } catch {
+    setStatus("error");
+  }
+}
   return (
     <section id="contact" className="section-pad" ref={ref}>
       <div className="cbs-container">
@@ -111,6 +121,12 @@ export default function Contact() {
                   value={form.business} required
                   onChange={e => setForm(f => ({ ...f, business: e.target.value }))} />
               </div>
+              {/* Turnstile widget */}
+<div
+  className="cf-turnstile"
+  data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+  data-theme="dark"
+/>
               <button type="submit" className="form-submit" disabled={status === "sending"}>
                 {status === "sending" ? "Sending…" : "Send message →"}
               </button>
@@ -129,6 +145,7 @@ export default function Contact() {
 
         </div>
       </div>
+      <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
     </section>
   );
 }
