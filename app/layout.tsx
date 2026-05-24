@@ -27,7 +27,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "MarketingAgency",
+      "@type": ["LocalBusiness", "ProfessionalService"],
       "@id": `${baseUrl}/#organization`,
       "name": "Callus Brand Solutions",
       "alternateName": "CBS",
@@ -59,30 +59,17 @@ const structuredData = {
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+          "dayOfWeek": [
+            "https://schema.org/Monday",
+            "https://schema.org/Tuesday",
+            "https://schema.org/Wednesday",
+            "https://schema.org/Thursday",
+            "https://schema.org/Friday",
+          ],
           "opens": "08:00",
           "closes": "18:00",
         },
       ],
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${baseUrl}/#website`,
-      "url": baseUrl,
-      "name": "Callus Brand Solutions",
-      "description": "We Build the Brands That Build Ghana.",
-      "inLanguage": "en-GH",
-    },
-    {
-      "@type": "Service",
-      "serviceType": "Digital Marketing",
-      "provider": {
-        "@id": `${baseUrl}/#organization`,
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "Ghana",
-      },
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
         "name": "Marketing Services",
@@ -94,6 +81,17 @@ const structuredData = {
           { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile App Development", "description": "React Native apps for iOS and Android." } },
         ],
       },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${baseUrl}/#website`,
+      "url": baseUrl,
+      "name": "Callus Brand Solutions",
+      "description": "We Build the Brands That Build Ghana.",
+      "publisher": {
+        "@id": `${baseUrl}/#organization`,
+      },
+      "inLanguage": "en-GH",
     },
   ],
 };
