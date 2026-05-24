@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Analytics from "@/components/Analytics";
+import StructuredData from "@/components/StructuredData";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -44,6 +45,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+      <head>
+        <StructuredData />
+      </head>
       <body>
         <Analytics />
         <Navbar />
