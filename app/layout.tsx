@@ -4,7 +4,6 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Analytics from "@/components/Analytics";
-import StructuredData from "@/components/StructuredData";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -22,19 +21,111 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+const baseUrl = "https://callus-brand-solutions-8xti.vercel.app";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "MarketingAgency",
+      "@id": `${baseUrl}/#organization`,
+      "name": "Callus Brand Solutions",
+      "alternateName": "CBS",
+      "url": baseUrl,
+      "description": "Callus Brand Solutions is Ghana's premier marketing consultancy. We handle your entire media presence — websites, social media, paid ads, and content strategy.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Accra",
+        "addressRegion": "Greater Accra",
+        "addressCountry": "GH",
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 5.6037,
+        "longitude": -0.1870,
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+233-000-000-000",
+        "contactType": "customer service",
+        "email": "hello@callusbrandsolutions.com",
+        "availableLanguage": "English",
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Ghana",
+      },
+      "priceRange": "GHS 2,500 - GHS 10,000",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+          "opens": "08:00",
+          "closes": "18:00",
+        },
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${baseUrl}/#website`,
+      "url": baseUrl,
+      "name": "Callus Brand Solutions",
+      "description": "We Build the Brands That Build Ghana.",
+      "inLanguage": "en-GH",
+    },
+    {
+      "@type": "Service",
+      "serviceType": "Digital Marketing",
+      "provider": {
+        "@id": `${baseUrl}/#organization`,
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Ghana",
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Marketing Services",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Web Development", "description": "Fast, beautiful, mobile-first websites built on Next.js or Webflow." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Social Media Management", "description": "Content creation and management across Instagram, TikTok, Facebook, and LinkedIn." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Paid Advertising", "description": "Google and Meta ad campaigns with measurable returns." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Content & SEO", "description": "Blog content, email campaigns, and search engine optimisation." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile App Development", "description": "React Native apps for iOS and Android." } },
+        ],
+      },
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   title: "Callus Brand Solutions — We Build the Brands That Build Ghana",
-  description:
-    "CBS is Ghana's premier marketing consultancy. We handle your entire media presence — websites, social media, paid ads, and content — so you can focus on running your business.",
-  keywords:
-    "marketing agency Ghana, social media management Accra, web development Ghana, digital marketing",
+  description: "CBS is Ghana's premier marketing consultancy. We handle your entire media presence — websites, social media, paid ads, and content — so you can focus on running your business.",
+  keywords: "marketing agency Ghana, social media management Accra, web development Ghana, digital marketing",
+  metadataBase: new URL(baseUrl),
   openGraph: {
     title: "Callus Brand Solutions",
     description: "We Build the Brands That Build Ghana.",
-    url: "https://callusbrandsolutions.com",
+    url: baseUrl,
     siteName: "Callus Brand Solutions",
     locale: "en_GH",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Callus Brand Solutions",
+    description: "We Build the Brands That Build Ghana.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -46,7 +137,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <head>
-        <StructuredData />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </head>
       <body>
         <Analytics />
