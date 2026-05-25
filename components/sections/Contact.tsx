@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Script from "next/script";
 
 const contactItems = [
   { icon: "📍", label: "Location", value: "Accra, Greater Accra, Ghana" },
@@ -122,10 +123,11 @@ export default function Contact() {
                   onChange={e => setForm(f => ({ ...f, business: e.target.value }))} />
               </div>
               {/* Turnstile widget */}
-<div
+              <div
   className="cf-turnstile"
   data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
   data-theme="dark"
+  style={{ marginBottom: "8px" }}
 />
               <button type="submit" className="form-submit" disabled={status === "sending"}>
                 {status === "sending" ? "Sending…" : "Send message →"}
@@ -145,7 +147,12 @@ export default function Contact() {
 
         </div>
       </div>
-      <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
+      <Script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  strategy="afterInteractive"
+  async
+  defer
+/>
     </section>
   );
 }
