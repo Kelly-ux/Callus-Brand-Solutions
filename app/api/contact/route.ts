@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function verifyTurnstile(token: string): Promise<boolean> {
   try {
@@ -25,6 +24,7 @@ async function verifyTurnstile(token: string): Promise<boolean> {
 
 export async function POST(req: Request) {
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const body = await req.json();
     const { name, email, phone, service, business, turnstileToken } = body;
 
