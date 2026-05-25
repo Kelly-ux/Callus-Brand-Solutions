@@ -10,52 +10,70 @@ const contactItems = [
 ];
 
 const services = [
-  "Web Development","Social Media Management","Paid Advertising",
-  "Content & SEO","Mobile App Development","Full Service Retainer",
-  "Analytics & Reporting","B2B Matchmaking","Local Search Mastery",
+  "Web Development", "Social Media Management", "Paid Advertising",
+  "Content & SEO", "Mobile App Development", "Full Service Retainer",
+  "Analytics & Reporting", "B2B Matchmaking", "Local Search Mastery",
 ];
 
 export default function Contact() {
   const ref = useRef<HTMLElement>(null);
-  const [status, setStatus] = useState<"idle"|"sending"|"sent"|"error">("idle");
-  const [form, setForm] = useState({ name:"", email:"", phone:"", service:"", business:"" });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [form, setForm] = useState({
+    name: "", email: "", phone: "", service: "", business: "",
+  });
 
+  // Scroll animation observer
   useEffect(() => {
     const obs = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); }),
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add("visible");
+      }),
       { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
     );
     ref.current?.querySelectorAll(".fade-up").forEach(el => obs.observe(el));
     return () => obs.disconnect();
   }, []);
 
+  // Turnstile callbacks
+  useEffect(() => {
+    (window as any).onTurnstileSuccess = (token: string) => {
+      setTurnstileToken(token);
+    };
+    (window as any).onTurnstileExpired = () => {
+      setTurnstileToken("");
+    };
+    return () => {
+      delete (window as any).onTurnstileSuccess;
+      delete (window as any).onTurnstileExpired;
+    };
+  }, []);
+
   async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  setStatus("sending");
-
-  // Get Turnstile token
-  const turnstileToken = (window as any).turnstile?.getResponse() || "";
-
-  try {
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, turnstileToken }),
-    });
-    if (res.ok) {
-      setStatus("sent");
-      setForm({ name: "", email: "", phone: "", service: "", business: "" });
-      (window as any).turnstile?.reset();
-      setTimeout(() => setStatus("idle"), 6000);
-    } else {
-      const data = await res.json();
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, turnstileToken }),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        setForm({ name: "", email: "", phone: "", service: "", business: "" });
+        setTurnstileToken("");
+        (window as any).turnstile?.reset();
+        setTimeout(() => setStatus("idle"), 6000);
+      } else {
+        const data = await res.json();
+        setStatus("error");
+        console.error(data.error);
+      }
+    } catch {
       setStatus("error");
-      console.error(data.error);
     }
-  } catch {
-    setStatus("error");
   }
-}
+
   return (
     <section id="contact" className="section-pad" ref={ref}>
       <div className="cbs-container">
@@ -63,10 +81,15 @@ export default function Contact() {
 
           {/* Left */}
           <div className="contact-intro">
-            <div className="eyebrow fade-up"><div className="eyebrow-line" /><span>Get in Touch</span></div>
-            <h2 className="fade-up" style={{ marginBottom:"20px" }}>Let's Talk About <em>Your Brand</em></h2>
+            <div className="eyebrow fade-up">
+              <div className="eyebrow-line" /><span>Get in Touch</span>
+            </div>
+            <h2 className="fade-up" style={{ marginBottom: "20px" }}>
+              Let's Talk About <em>Your Brand</em>
+            </h2>
             <p className="fade-up">
-              Fill in the form and we'll respond within 24 hours with an initial assessment of your brand's current digital presence — free of charge.
+              Fill in the form and we'll respond within 24 hours with an initial
+              assessment of your brand's current digital presence — free of charge.
             </p>
             <div className="contact-items fade-up">
               {contactItems.map(item => (
@@ -87,22 +110,22 @@ export default function Contact() {
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label" htmlFor="c-name">Full name</label>
-                  <input id="c-name" type="text" className="form-input" placeholder="Henry Addo"
-                    value={form.name} required
+                  <input id="c-name" type="text" className="form-input"
+                    placeholder="Henry Addo" value={form.name} required
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
                 </div>
                 <div className="form-group">
                   <label className="form-label" htmlFor="c-email">Email address</label>
-                  <input id="c-email" type="email" className="form-input" placeholder="henry@yourbrand.com"
-                    value={form.email} required
+                  <input id="c-email" type="email" className="form-input"
+                    placeholder="henry@yourbrand.com" value={form.email} required
                     onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
                 </div>
               </div>
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label" htmlFor="c-phone">Phone number</label>
-                  <input id="c-phone" type="tel" className="form-input" placeholder="+233 54 486 6395"
-                    value={form.phone}
+                  <input id="c-phone" type="tel" className="form-input"
+                    placeholder="+233 54 486 6395" value={form.phone}
                     onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
                 </div>
                 <div className="form-group">
@@ -122,24 +145,33 @@ export default function Contact() {
                   value={form.business} required
                   onChange={e => setForm(f => ({ ...f, business: e.target.value }))} />
               </div>
+
               {/* Turnstile widget */}
               <div
-  className="cf-turnstile"
-  data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
-  data-theme="dark"
-  style={{ marginBottom: "8px" }}
-/>
-              <button type="submit" className="form-submit" disabled={status === "sending"}>
+                className="cf-turnstile"
+                data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                data-theme="dark"
+                data-callback="onTurnstileSuccess"
+                data-expired-callback="onTurnstileExpired"
+                style={{ marginBottom: "8px" }}
+              />
+
+              <button
+                type="submit"
+                className="form-submit"
+                disabled={status === "sending" || !turnstileToken}
+              >
                 {status === "sending" ? "Sending…" : "Send message →"}
               </button>
+
               {status === "sent" && (
-                <p style={{ fontSize:"13px", color:"var(--gold)", marginTop:"8px" }}>
+                <p style={{ fontSize: "13px", color: "var(--gold)", marginTop: "8px" }}>
                   ✦ Message sent. We'll be in touch within 24 hours.
                 </p>
               )}
               {status === "error" && (
-                <p style={{ fontSize:"13px", color:"#e87070", marginTop:"8px" }}>
-                  Something went wrong. Please email us at hello@callusbrandsolutions.com
+                <p style={{ fontSize: "13px", color: "#e87070", marginTop: "8px" }}>
+                  Something went wrong. Please email us at beingcallusbrandsolutions@gmail.com
                 </p>
               )}
             </form>
@@ -147,12 +179,11 @@ export default function Contact() {
 
         </div>
       </div>
+
       <Script
-  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-  strategy="afterInteractive"
-  async
-  defer
-/>
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        strategy="afterInteractive"
+      />
     </section>
   );
 }
