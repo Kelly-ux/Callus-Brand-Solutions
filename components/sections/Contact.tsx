@@ -4,7 +4,7 @@ import Script from "next/script";
 
 const contactItems = [
   { icon: "📍", label: "Location", value: "Accra, Greater Accra, Ghana" },
-  { icon: "✉️", label: "Email", value: "beingcallusbrandsolutions@gmail.com" },
+  { icon: "✉️", label: "Email", value: "callusbrandsolutions@gmail.com" },
   { icon: "📞", label: "Phone", value: "+233 54 486 6395" },
   { icon: "🕐", label: "Response time", value: "Within 24 hours, Mon – Fri" },
 ];
@@ -171,7 +171,7 @@ export default function Contact() {
               )}
               {status === "error" && (
                 <p style={{ fontSize: "13px", color: "#e87070", marginTop: "8px" }}>
-                  Something went wrong. Please email us at beingcallusbrandsolutions@gmail.com
+                  Something went wrong. Please email us at callusbrandsolutions@gmail.com
                 </p>
               )}
             </form>

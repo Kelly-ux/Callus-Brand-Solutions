@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: "CBS Website <noreply@callusbrandsolutions.com>",
-      to: [process.env.CONTACT_EMAIL ?? "hello@callusbrandsolutions.com"],
+      to: [process.env.CONTACT_EMAIL ?? "callusbrandsolutions@gmail.com"],
       replyTo: email,
       subject: `New enquiry from ${sanitise(name)} — ${service || "General"}`,
       html: `
