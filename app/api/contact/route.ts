@@ -67,7 +67,7 @@ export async function POST(req: Request) {
       str.replace(/<[^>]*>/g, "").trim().slice(0, 2000);
 
     await resend.emails.send({
-      from: "CBS Website <noreply@callusbrandsolutions.com>",
+      from: "CBS Website <<onboarding@resend.dev>",
       to: [process.env.CONTACT_EMAIL ?? "callusbrandsolutions@gmail.com"],
       replyTo: email,
       subject: `New enquiry from ${sanitise(name)} — ${service || "General"}`,
