@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-
+import { Redis } from "@upstash/redis";
 
 async function verifyTurnstile(token: string): Promise<boolean> {
   try {
@@ -22,13 +22,48 @@ async function verifyTurnstile(token: string): Promise<boolean> {
   }
 }
 
+async function checkRateLimit(ip: string): Promise<boolean> {
+  if (!process.env.UPSTASH_REDIS_REST_URL) return true;
+
+  try {
+    const redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    });
+
+    const key = `rate_limit:contact:${ip}`;
+    const requests = await redis.incr(key);
+
+    if (requests === 1) {
+      await redis.expire(key, 3600);
+    }
+
+    return requests <= 5;
+  } catch {
+    return true;
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
+
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+
+    const allowed = await checkRateLimit(ip);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many submissions. Please try again in an hour." },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const { name, email, phone, service, business, turnstileToken } = body;
 
-    // Basic validation
     if (!name || !email || !business) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -36,7 +71,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -45,7 +79,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Turnstile verification — skip in development
     if (process.env.NODE_ENV === "production") {
       if (!turnstileToken) {
         return NextResponse.json(
@@ -62,7 +95,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // Input sanitisation — strip HTML tags
     const sanitise = (str: string) =>
       str.replace(/<[^>]*>/g, "").trim().slice(0, 2000);
 
@@ -99,9 +131,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true });
-  } 
-   catch (error) {
-  console.error("Contact form error:", JSON.stringify(error));
+  } catch (error) {
+    console.error("Contact form error:", JSON.stringify(error));
     return NextResponse.json(
       { error: "Failed to send message" },
       { status: 500 }
