@@ -49,7 +49,7 @@ const structuredData = {
         "@type": "ContactPoint",
         "telephone": "+233-000-000-000",
         "contactType": "customer service",
-        "email": "hello@callusbrandsolutions.com",
+        "email": "cbscallusbrandsolutions@gmail.com",
         "availableLanguage": "English",
       },
       "areaServed": {

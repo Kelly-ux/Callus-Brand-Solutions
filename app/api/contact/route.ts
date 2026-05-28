@@ -100,7 +100,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: "CBS Website <onboarding@resend.dev>",
-      to: [process.env.CONTACT_EMAIL ?? "callusbrandsolutions@gmail.com"],
+      to: [process.env.CONTACT_EMAIL ?? "cbscallusbrandsolutions@gmail.com"],
       replyTo: email,
       subject: `New enquiry from ${sanitise(name)} — ${service || "General"}`,
       html: `

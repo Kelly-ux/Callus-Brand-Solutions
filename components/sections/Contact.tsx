@@ -4,7 +4,7 @@ import Script from "next/script";
 
 const contactItems = [
   { icon: "📍", label: "Location", value: "Accra, Greater Accra, Ghana" },
-  { icon: "✉️", label: "Email", value: "callusbrandsolutions@gmail.com" },
+  { icon: "✉️", label: "Email", value: "cbscallusbrandsolutions@gmail.com" },
   { icon: "📞", label: "Phone", value: "+233 54 486 6395" },
   { icon: "🕐", label: "Response time", value: "Within 24 hours, Mon – Fri" },
 ];
