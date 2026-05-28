@@ -20,7 +20,7 @@ export default function CtaBand() {
 
       <div className="cta-actions fade-up">
   
-    <a href="https://calendly.com/callusbrandsolutions/free-brand-audit"
+    <a href="https://calendly.com/henry-erliecherry/free-brand-audit"
         target="_blank"
         rel="noopener noreferrer"
         className="btn-primary"

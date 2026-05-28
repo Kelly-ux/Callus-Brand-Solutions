@@ -128,7 +128,7 @@ async function handlePortalLogin(e: React.FormEvent) {
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
     <a
-    href="https://calendly.com/callusbrandsolutions/free-brand-audit"
+    href="https://calendly.com/henry-erliecherry/free-brand-audit"
     target="_blank"
     rel="noopener noreferrer"
     className="nav-cta"
