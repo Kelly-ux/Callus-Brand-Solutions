@@ -9,6 +9,7 @@ import Testimonials from "@/components/sections/Testimonials";
 import BlogPreview from "@/components/sections/BlogPreview";
 import CtaBand from "@/components/sections/CtaBand";
 import Contact from "@/components/sections/Contact";
+import PricingFAQ from "@/components/sections/PricingFAQ";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       <Process />
       <Portfolio />
       <Pricing />
+      <PricingFAQ />
       <Testimonials />
       <BlogPreview />
       <CtaBand />

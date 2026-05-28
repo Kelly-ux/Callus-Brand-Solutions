@@ -16,7 +16,7 @@ export default function WhatsAppButton() {
     const t = setTimeout(() => setPulse(false), 6000);
     return () => clearTimeout(t);
   }, []);
-
+  
   const phoneNumber = "233544866395"; // +233 54 486 6395 without spaces or +
   const message = encodeURIComponent(
     "Hi Callus Brand Solutions! I found you online and I'd like to discuss growing my business."
