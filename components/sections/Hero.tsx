@@ -27,10 +27,20 @@ export default function Hero() {
             <p className="hero-sub fade-up">
               Callus Brand Solutions handles your entire media presence — websites, social media, paid ads, and content strategy — so you can focus on what you do best: running your business.
             </p>
+
             <div className="hero-actions fade-up">
-              <a href="#contact" className="btn-primary">Start Growing <span>→</span></a>
-              <a href="#portfolio" className="btn-secondary">See Our Work <span>→</span></a>
-            </div>
+  
+        <a href="https://calendly.com/callusbrandsolutions/free-brand-audit"
+         target="_blank"
+          rel="noopener noreferrer"
+            className="btn-primary"
+          >
+           Book a Free Call →
+         </a>
+  <a href="#services" className="btn-secondary">
+    See what we do <span>→</span>
+  </a>
+</div>
             <div className="hero-stats fade-up">
               {[{ num: "50+", label: "Brands grown" }, { num: "3×", label: "Average ROI" }, { num: "100%", label: "Done-for-you" }].map(s => (
                 <div key={s.label}>

@@ -16,10 +16,21 @@ export default function CtaBand() {
       </div>
       <h2 className="fade-up">Stop Leaving Growth <em>on the Table</em></h2>
       <p className="fade-up">Your competitors are building their digital presence right now. Let's make sure you're ahead of them — not catching up.</p>
+
+
       <div className="cta-actions fade-up">
-        <a href="#contact" className="btn-primary">Book a Free Audit →</a>
-        <a href="tel:+233000000000" className="btn-secondary">Call us directly <span>→</span></a>
-      </div>
+  
+    <a href="https://calendly.com/callusbrandsolutions/free-brand-audit"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-primary"
+    >
+    Book a Free Call →
+  </a>
+  <a href="#contact" className="btn-secondary">
+    Send us a message <span>→</span>
+  </a>
+</div>
     </section>
   );
 }

@@ -29,7 +29,7 @@ export default function Footer() {
           <div className="footer-col">
             <h4>Services</h4>
             <ul className="footer-links">
-              {["Web Development","Social Media","Paid Advertising","Content & SEO","Mobile Apps","Analytics"].map(item => (
+              {["Web Development","Social Media","Paid Advertising","Content & SEO","Analytics"].map(item => (
                 <li key={item}><a href="#services">{item}</a></li>
               ))}
             </ul>

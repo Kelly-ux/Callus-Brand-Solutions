@@ -126,8 +126,24 @@ async function handlePortalLogin(e: React.FormEvent) {
           ))}
         </ul>
 
-        <button className="nav-cta" onClick={() => setPortalOpen(true)}>Client Portal</button>
-
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+    <a
+    href="https://calendly.com/callusbrandsolutions/free-brand-audit"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="nav-cta"
+    style={{ textDecoration: "none" }}
+  >
+    Book a Call
+  </a>
+  <button
+    className="nav-cta"
+    onClick={() => setPortalOpen(true)}
+    style={{ borderColor: "rgba(200,160,80,0.2)", color: "var(--silver-dk)" }}
+  >
+    Client Portal
+  </button>
+</div>
         <button
           className="nav-mobile-toggle"
           onClick={() => setMenuOpen(!menuOpen)}
