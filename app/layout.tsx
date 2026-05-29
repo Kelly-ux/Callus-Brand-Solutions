@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import Analytics from "@/components/Analytics";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import CookieBanner from "@/components/CookieBanner";
+import PageLoader from "@/components/PageLoader";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -143,6 +144,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <PageLoader />
         <WhatsAppButton />
         <Analytics />
         <Navbar />
