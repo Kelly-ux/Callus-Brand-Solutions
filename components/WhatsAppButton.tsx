@@ -27,74 +27,80 @@ export default function WhatsAppButton() {
 
   return (
     <>
-      <style>{`
-        @keyframes cbs-wa-pulse {
-          0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
-          70% { box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
-        @keyframes cbs-wa-fadein {
-          from { opacity: 0; transform: translateY(20px) scale(0.8); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .cbs-wa-btn {
-          position: fixed;
-          bottom: 28px;
-          right: 28px;
-          z-index: 999;
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          background: #25D366;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
-          cursor: pointer;
-          text-decoration: none;
-          border: none;
-          animation: cbs-wa-fadein 0.4s ease forwards;
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .cbs-wa-btn:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 28px rgba(37, 211, 102, 0.6);
-        }
-        .cbs-wa-btn.pulse {
-          animation: cbs-wa-fadein 0.4s ease forwards, cbs-wa-pulse 1.5s ease-out 0.5s 3;
-        }
-        .cbs-wa-tooltip {
-          position: fixed;
-          bottom: 38px;
-          right: 100px;
-          z-index: 998;
-          background: var(--ink);
-          border: 1px solid rgba(200,160,80,0.2);
-          border-radius: 10px;
-          padding: 10px 16px;
-          font-family: var(--ff-body);
-          font-size: 13px;
-          color: var(--cream);
-          white-space: nowrap;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-          animation: cbs-wa-fadein 0.4s ease 0.3s both;
-          pointer-events: none;
-        }
-        .cbs-wa-tooltip::after {
-          content: '';
-          position: absolute;
-          right: -7px;
-          top: 50%;
-          transform: translateY(-50%);
-          border: 7px solid transparent;
-          border-right: none;
-          border-left-color: rgba(200,160,80,0.2);
-        }
-        @media (max-width: 680px) {
-          .cbs-wa-btn { bottom: 20px; right: 20px; width: 54px; height: 54px; }
-          .cbs-wa-tooltip { display: none; }
-        }
-      `}</style>
+    <style>{`
+  @keyframes cbs-wa-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+    70% { box-shadow: 0 0 0 16px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+  }
+  @keyframes cbs-wa-fadein {
+    from { opacity: 0; transform: translateY(20px) scale(0.8); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .cbs-wa-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 997;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #25D366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    animation: cbs-wa-fadein 0.4s ease forwards;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .cbs-wa-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(37, 211, 102, 0.6);
+  }
+  .cbs-wa-btn.pulse {
+    animation: cbs-wa-fadein 0.4s ease forwards,
+               cbs-wa-pulse 1.5s ease-out 0.5s 3;
+  }
+  .cbs-wa-tooltip {
+    position: fixed;
+    bottom: 38px;
+    right: 100px;
+    z-index: 996;
+    background: var(--ink);
+    border: 1px solid rgba(200,160,80,0.2);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-family: var(--ff-body);
+    font-size: 13px;
+    color: var(--cream);
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: cbs-wa-fadein 0.4s ease 0.3s both;
+    pointer-events: none;
+  }
+  .cbs-wa-tooltip::after {
+    content: '';
+    position: absolute;
+    right: -7px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 7px solid transparent;
+    border-right: none;
+    border-left-color: rgba(200,160,80,0.2);
+  }
+  @media (max-width: 680px) {
+    .cbs-wa-btn {
+      bottom: 16px;
+      right: 16px;
+      width: 50px;
+      height: 50px;
+    }
+    .cbs-wa-tooltip { display: none; }
+  }
+`}</style>
 
       {/* Tooltip — shows for 6 seconds then fades */}
       {pulse && (

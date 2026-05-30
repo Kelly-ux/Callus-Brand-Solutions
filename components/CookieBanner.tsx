@@ -105,8 +105,8 @@ export default function CookieBanner() {
         @media (max-width: 680px) {
           .cbs-cookie {
             left: 16px;
-            right: 16px;
-            bottom: 90px;
+            right: 76px;
+            bottom: 16px;
             max-width: none;
           }
         }
