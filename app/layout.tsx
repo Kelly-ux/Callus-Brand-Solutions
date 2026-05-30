@@ -7,7 +7,7 @@ import Analytics from "@/components/Analytics";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import CookieBanner from "@/components/CookieBanner";
 import PageLoader from "@/components/PageLoader";
-
+import { SpeedInsights } from "@vercel/speed-insights/next";
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -129,7 +129,11 @@ export const metadata: Metadata = {
     },
   },
 };
-
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#1A1410",
+};
 export default function RootLayout({
   children,
 }: {
@@ -151,6 +155,7 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <CookieBanner />
+        <SpeedInsights />
       </body>
     </html>
   );

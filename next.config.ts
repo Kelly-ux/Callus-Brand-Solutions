@@ -35,14 +35,14 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
-      },
-    ],
-    formats: ["image/avif", "image/webp"],
-  },
+  remotePatterns: [
+    { protocol: "https", hostname: "cdn.sanity.io" },
+    { protocol: "https", hostname: "lh3.googleusercontent.com" },
+  ],
+  formats: ["image/avif", "image/webp"],
+  minimumCacheTTL: 60,
+  deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+},
 };
 
 export default nextConfig;
