@@ -8,6 +8,8 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import CookieBanner from "@/components/CookieBanner";
 import PageLoader from "@/components/PageLoader";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+
+
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
